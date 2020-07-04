@@ -8,7 +8,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Welcome to <code>Scouting Inc</code> corporation.
+          Welcome to <code>Scouting Inc 😎</code> corporation.
         </p>
         <a
           className="App-link"
@@ -16,21 +16,31 @@ function App() {
           target="_toscn"
           rel="noopener noreferrer"
         >
-          TOSCN - friendly industrialists and explorers
+          TOSCN 😇 friendly industrialists and explorers
+        </a>
+        <a
+          href="https://neosb.herokuapp.com"
+          target="_neosb"
+
+        >
+          Neosb 🎶 the aspiring electronic musician 
         </a>
         <a
           href="https://wiki.eveuniversity.org/"
           target="_uniwiki"
         >
-          UNIWIKI
+          UNIWIKI 📗
         </a>
         <a
           href="https://support.eveonline.com/hc/en-us"
           target="_support"
         >
-          EVE Online Support  
+          EVE Online 🚑 Support 
         </a>
       </header>
+      <footer>
+
+      </footer>
     </div>
   );
 }
