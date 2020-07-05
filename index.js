@@ -27,8 +27,8 @@ if (process.env.NODE_ENV == 'test') {
 if (process.env.NODE_ENV == 'production') {
   // Use enforce.HTTPS({ trustProtoHeader: true }) in case you are behind
   // a load balancer (e.g. Heroku). See further comments below
-  app.use(enforce.HTTPS({ trustProtoHeader: true }));
-}
+  app.use(enforce.HTTPS());
+// }
 
 app.use(express.static(path.join(__dirname, './scoutinginc/build')));
 app.get('/', function(req, res) {
