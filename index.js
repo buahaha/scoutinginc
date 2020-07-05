@@ -13,7 +13,7 @@ app.use(bodyParser.text({ type: 'text/plain' }));
 app.use(bodyParser.json({ type: 'application/json' }))
 app.use(bodyParser.urlencoded({ extended: true}));
 
-app.use(morgan('dev'))
+app.use(morgan('combined'))
 
 const mongoose = require('mongoose');
 const dbuser = process.env.DB_USER || require('./secrets/db').dbSecrets.user;
