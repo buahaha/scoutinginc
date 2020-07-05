@@ -13,7 +13,7 @@ var corporationSchema = new Schema({
   tax_rate: Number,
   ticker: String,
   url: String,
-  corp_id: Number
+  corporation_id: { type: Number, index: { unique: true } }
 });
 
 const Corporation = mongoose.model('Corporation', corporationSchema);

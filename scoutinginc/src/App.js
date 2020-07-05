@@ -3,6 +3,8 @@ import logo from './logo.svg';
 import './App.css';
 import axios from 'axios';
 
+import TweetEmbed from 'react-tweet-embed';
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -42,12 +44,17 @@ class App extends React.Component {
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>
-            Welcome to <code>Scouting Inc 😎</code> corporation.
+            Welcome to <code>Scouting Inc</code> corporation.
+          </p>
+          <p dangerouslySetInnerHTML={{__html: temperature.description}}>
+            {/* {temperature.description} */}
           </p>
           <p>
             {temperature.ceo_id}
             {/* {temperature} */}
           </p>
+          <TweetEmbed id="1279402833310175232" />
+
           <a
             className="App-link"
             href="https://toscn.herokuapp.com"

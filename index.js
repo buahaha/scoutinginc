@@ -14,15 +14,29 @@ app.use(bodyParser.urlencoded({ extended: true}));
 
 const mongoose = require('mongoose');
 const dbuser = process.env.DB_USER || require('./secrets/db').dbSecrets.user;
-const dbpassword = process.env.DB_PASSWORD || equire('./secrets/db').dbSecrets.password;
-mongoose.connect('mongodb://' + dbuser + ':' + dbpassword + '@ds054128.mlab.com:54128/scoutinginc', {useNewUrlParser: true, useUnifiedTopology: true});
+const dbpassword = process.env.DB_PASSWORD || require('./secrets/db').dbSecrets.password;
+if (process.env.NODE_ENV == 'test') {
+  mongoose.connect('mongodb://' + dbuser + ':' + dbpassword + '@ds014808.mlab.com:14808/scoutinginc-test', {useNewUrlParser: true, useUnifiedTopology: true});
+} else {
+  mongoose.connect('mongodb://' + dbuser + ':' + dbpassword + '@ds054128.mlab.com:54128/scoutinginc', {useNewUrlParser: true, useUnifiedTopology: true});
+}
 
 
-if (process.env.PRODUCTION) {
+
+
+///////////!!!
+
+///check
+
+///////////!!!!
+if (process.env.NODE_ENV == 'production') {
   // Use enforce.HTTPS({ trustProtoHeader: true }) in case you are behind
   // a load balancer (e.g. Heroku). See further comments below
   app.use(enforce.HTTPS({ trustProtoHeader: true }));
 }
+
+
+
 
 
 app.use(express.static(path.join(__dirname, './scoutinginc/build')));
@@ -44,4 +58,6 @@ app.set('trust proxy', true);
 
 const PORT = process.env.PORT || 9000;
 
-app.listen(PORT);
+var scoutinginc = app.listen(PORT);
+
+exports.scoutinginc = scoutinginc;
