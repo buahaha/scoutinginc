@@ -4,6 +4,7 @@ const app = express();
 var axios = require('axios');
 var enforce = require('express-sslify');
 var cors = require("cors");
+const morgan = require('morgan')
 
 bodyParser = require("body-parser");
 app.use(cors());
@@ -11,6 +12,8 @@ app.use(cors());
 app.use(bodyParser.text({ type: 'text/plain' }));
 app.use(bodyParser.json({ type: 'application/json' }))
 app.use(bodyParser.urlencoded({ extended: true}));
+
+app.use(morgan('dev'))
 
 const mongoose = require('mongoose');
 const dbuser = process.env.DB_USER || require('./secrets/db').dbSecrets.user;
@@ -21,23 +24,11 @@ if (process.env.NODE_ENV == 'test') {
   mongoose.connect('mongodb://' + dbuser + ':' + dbpassword + '@ds054128.mlab.com:54128/scoutinginc', {useNewUrlParser: true, useUnifiedTopology: true});
 }
 
-
-
-
-///////////!!!
-
-///check
-
-///////////!!!!
 if (process.env.NODE_ENV == 'production') {
   // Use enforce.HTTPS({ trustProtoHeader: true }) in case you are behind
   // a load balancer (e.g. Heroku). See further comments below
   app.use(enforce.HTTPS({ trustProtoHeader: true }));
 }
-
-
-
-
 
 app.use(express.static(path.join(__dirname, './scoutinginc/build')));
 app.get('/', function(req, res) {
