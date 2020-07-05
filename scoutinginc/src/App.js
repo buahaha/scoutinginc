@@ -9,7 +9,10 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     // this.handleChange = this.handleChange.bind(this);
-    this.state = {callSign: ''};
+    this.state = {
+      callSign: '',
+      ceo: ''
+    };
   }
 
   // handleChange(e) {
@@ -17,19 +20,19 @@ class App extends React.Component {
   // }
 
   async pronuncedAtCourt() {
-    await axios.get('/public/')
-    .then((response) => {
-      // handle success
-      console.log(response);
-      this.setState({callSign: response.data});
-    })
-    .catch((error) => {
-      // handle error
-      console.log(error);
-    })
-    .finally(() => {
-      console.log('prononced at court')
-    });
+    await axios.get('/public')
+      .then((response) => {
+        // handle success
+        console.log(response.data);
+        this.setState({callSign: response.data, ceo: response.data.ceo});
+      })
+        .catch((error) => {
+          // handle error
+          console.log(error);
+        })
+          .finally(() => {
+            console.log('prononced at court')
+          });
     
   }
 
@@ -39,6 +42,7 @@ class App extends React.Component {
 
   render() {
     const temperature = this.state.callSign;
+    const ceo = this.state.ceo;
     return (
       <div className="App">
         <header className="App-header">
@@ -46,14 +50,17 @@ class App extends React.Component {
           <p>
             Welcome to <code>Scouting Inc</code> corporation.
           </p>
+          
+
           <p dangerouslySetInnerHTML={{__html: temperature.description}}>
-            {/* {temperature.description} */}
-          </p>
-          <p>
-            {temperature.ceo_id}
-            {/* {temperature} */}
+            
           </p>
           <TweetEmbed id="1279402833310175232" />
+          <p>
+            { temperature.member_count} players under the rule of { ceo.name } commonly 
+            pronounced as the CEO, since { Date(temperature.date_founded) } flying under 
+            ticker [{ temperature.ticker }] and sharing { temperature.tax_rate * 100 }% tax.
+          </p>
 
           <a
             className="App-link"

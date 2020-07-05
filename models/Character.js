@@ -11,7 +11,7 @@ var characterSchema = new Schema({
   name: String,
   race_id: Number,
   security_status: Number,
-  character_id: { type: Number, index: { unique: true } }
+  character_id: { type: Number, index: true, unique: true }
 });
 
 const Character = mongoose.model('Character', characterSchema);

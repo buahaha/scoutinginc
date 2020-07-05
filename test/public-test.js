@@ -56,16 +56,12 @@ describe('Public', function() {
     it('should save to db', function(done) {
       Corporation.findOne({corporation_id: 98648528})
         .then(function(corp, error) {
-          // console.log('in test')
           if (error) {
-            // console.log('after test')
-            throw done(error);
-          } else if (corp.corporation_id == 98648529) {
-            done()
-          } else {
-            throw "not found"
+            done(error);
+          } else if (corp.corporation_id == 98648528) {
             done()
           }
+          else throw "corporation not found"
         })
     })
   })
@@ -74,7 +70,7 @@ describe('Public', function() {
 
     it('should send 404 when character not found', function(done) {
       request(app)
-        .get('/public/character/2113883361')
+        .get('/public/character/21138')
           .expect(404)
             .end(function(err, res){
               if (err) throw err;
@@ -105,16 +101,16 @@ describe('Public', function() {
     it('should save to db', function(done) {
       Character.findOne({character_id: 2113883361})
         .then(function(corp, error) {
-          if (error) {
-            throw done(error);
-          }
-          else done()
+          if (error) done(error);
+          else if (corp.character_id == 2113883361) done()
+          else throw "character not found"
         })
     })
 
   })
 
   describe('home', function(done) {
+
     it('should return OK', function(done) {
       request(app)
         .get('/public')
@@ -124,6 +120,7 @@ describe('Public', function() {
               else done()
             });
     })
+
     it('should return json', function(done) {
       request(app)
         .get('/public')
@@ -133,5 +130,32 @@ describe('Public', function() {
               else done()
             });
     })
+
+    it('should return Scouting Inc as corporation name', function(done) {
+      request(app)
+        .get('/public')
+          .expect(function(res) {
+            assert.equal(res.body.name, 'Scouting Inc', 
+              'corporation names does not match')
+          })
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return Volatile Mind as CEO name', function(done) {
+      request(app)
+        .get('/public')
+          .expect(function(res) {
+            assert.equal(res.body.ceo.name, 'Volatile Mind', 
+              'CEO name does not match')
+          })
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
   })
 })

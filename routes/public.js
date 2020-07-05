@@ -3,6 +3,7 @@ var router = express.Router()
 const axios = require('axios').default;
 
 // corporation Scouting Inc id -> 98648528
+const scoutinginc = 98648528;
 const Corporation = require('./../models/Corporation').Corporation;
 
 router.get('/corporations/:corporationID', function(req, res) {
@@ -59,18 +60,6 @@ router.get('/corporations/:corporationID', function(req, res) {
         })
 })
 
-router.get('/', function (req, res) {
-
-  // axios.get('/public/corporations/98648528')
-  //   .then(function(corp) {
-  //     var ceo_id = corp.ceo_id
-
-  //   })
-
-
-  res.sendStatus(200)
-})
-
 // character Volatile Mind id - 2113883361
 
 const Character = require('./../models/Character').Character;
@@ -111,6 +100,34 @@ router.get('/character/:characterID', function (req, res) {
       })
         .finally(function() {
           console.log('introduced to court')
+        })
+})
+
+router.get('/', async function (req, res) {
+  const PORT = process.env.PORT || 9000;
+  await axios.get('http://localhost:' + PORT + '/public/corporations/' + scoutinginc )
+    .then(async function(corp) {
+      // console.log(corp.data)
+      var ceo_id = corp.data.ceo_id
+      // console.log(ceo_id)
+      var corp_data = corp.data
+      await axios.get('http://localhost:' + PORT + '/public/character/' + ceo_id )
+        .then(function(ceo) {
+          // console.log(ceo.data)
+          var response = corp_data;
+          response.ceo = ceo.data;
+          // console.log(response)
+          res.json(response);
+        })
+          .catch(function(error) {
+            res.sendStatus(500).end();
+          })
+    })
+      .catch(function(error) {
+        res.sendStatus(500).end();
+      })
+        .finally(function() {
+          console.log('at the court');
         })
 })
 
