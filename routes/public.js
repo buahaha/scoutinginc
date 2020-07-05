@@ -106,13 +106,21 @@ router.get('/character/:characterID', function (req, res) {
 router.get('/', async function (req, res) {
   const PORT = process.env.PORT || 9000;
 
-  await axios.get('http://localhost:' + PORT + '/public/corporations/' + scoutinginc )
+  await axios.get('http://localhost:' + PORT + '/public/corporations/' + scoutinginc,
+  { proxy: false,
+  httpsAgent: https.Agent({
+      rejectUnauthorized: false // Allows the use of self-signed certificates (not recommended)
+})} )
     .then(async function(corp) {
       // console.log(corp.data)
       var ceo_id = corp.data.ceo_id
       // console.log(ceo_id)
       var corp_data = corp.data
-      await axios.get('http://localhost:' + PORT + '/public/character/' + ceo_id )
+      await axios.get('http://localhost:' + PORT + '/public/character/' + ceo_id,
+      { proxy: false,
+        httpsAgent: https.Agent({
+            rejectUnauthorized: false // Allows the use of self-signed certificates (not recommended)
+      })}  )
         .then(function(ceo) {
           // console.log(ceo.data)
           var response = corp_data;
