@@ -1,38 +1,38 @@
 var express = require('express')
 var router = express.Router()
-const axios = require('axios').default;
+
+const got = require('got');
 
 // corporation Scouting Inc id -> 98648528
 const scoutinginc = 98648528;
 const Corporation = require('./../models/Corporation').Corporation;
 
-router.get('/corporations/:corporationID', function(req, res) {
+
+router.get('/corporations/:corporationID', async function(req, res) {
   var corporationID = req.params.corporationID;
   // console.log(corporationID)
   if (!typeof(corporationID) == 'number') {
     res.sendStatus(400);
   }
-  axios.get(
-      'https://esi.evetech.net/latest/corporations/' + corporationID + '/?datasource=tranquility'
-    )
-    .then(async function (response) {
-      if (!response) {
-        res.sendStatus(404)
-      }
+  await got.get('https://esi.evetech.net/latest/corporations/' + corporationID + '/?datasource=tranquility', {
+      responseType: 'json'
+  })
+    .then(async function(esi_response) {
+      var body = esi_response.body;
       await Corporation.updateOne({
         corporation_id: corporationID
       }, {
-        ceo_id: response.data.ceo_id,
-        creator_id: response.data.creator_id,
-        date_founded: response.data.date_founded,
-        description: response.data.description,
-        home_station_id: response.data.home_station_id,
-        member_count: response.data.member_count,
-        name: response.data.name,
-        shares: response.data.shares,
-        tax_rate: response.data.tax_rate,
-        ticker: response.data.ticker,
-        url: response.data.url,
+        ceo_id: body.ceo_id,
+        creator_id: body.creator_id,
+        date_founded: body.date_founded,
+        description: body.description,
+        home_station_id: body.home_station_id,
+        member_count: body.member_count,
+        name: body.name,
+        shares: body.shares,
+        tax_rate: body.tax_rate,
+        ticker: body.ticker,
+        url: body.url,
         corporation_id: corporationID
       }, {
         upsert: true
@@ -46,37 +46,37 @@ router.get('/corporations/:corporationID', function(req, res) {
             }
           })
         })
-          .catch(function(err) {
-            console.error(err)
-            res.sendStatus(500).json(err)
+          .catch(function(error) {
+            console.error(error)
+            res.sendStatus(500).end();
           })
     })
-      .catch(function(err) {
-        // console.log('catch')
-        res.sendStatus(404).end()
+      .catch(function(error) {
+        console.error(error)
+        res.sendStatus(404).end();
       })
-        .finally(function() {
-          console.log('prononced at court')
-        })
 })
 
 // character Volatile Mind id - 2113883361
 
 const Character = require('./../models/Character').Character;
-router.get('/character/:characterID', function (req, res) {
+router.get('/characters/:characterID', async function (req, res) {
   characterID = req.params.characterID;
-  axios.get('https://esi.evetech.net/latest/characters/' + characterID + '/?datasource=tranquility')
-    .then(async function (response) {
+  await got.get('https://esi.evetech.net/latest/characters/' + characterID + '/?datasource=tranquility', {
+      responseType: 'json'
+  })
+    .then(async function(esi_response) {
+      var body = esi_response.body;
       await Character.updateOne({ character_id: characterID}, {
-        ancestry_id: response.data.ancestry_id,
-        birthday: response.data.birthday,
-        bloodline_id: response.data.bloodline_id,
-        corporation_id: response.data.corporation_id,
-        description: response.data.description,
-        gender: response.data.gender,
-        name: response.data.name,
-        race_id: response.data.race_id,
-        security_status: response.data.security_status,
+        ancestry_id: body.ancestry_id,
+        birthday: body.birthday,
+        bloodline_id: body.bloodline_id,
+        corporation_id: body.corporation_id,
+        description: body.description,
+        gender: body.gender,
+        name: body.name,
+        race_id: body.race_id,
+        security_status: body.security_status,
         character_id: characterID
       }, {
         upsert: true
@@ -92,39 +92,41 @@ router.get('/character/:characterID', function (req, res) {
         .catch(function(err) {
           console.error(err)
           res.sendStatus(500).json(err)
-        })
-    })
-      .catch(function(err) {
-        // console.log('catch')
-        res.sendStatus(404).end()
       })
-        .finally(function() {
-          console.log('introduced to court')
-        })
+    })
+      .catch(function(error) {
+        console.error(error)
+        res.sendStatus(404).end();
+      })
+  
 })
 
 router.get('/', async function (req, res) {
   const PORT = process.env.PORT || 9000;
 
-  await axios.get('http://localhost:' + PORT + '/public/corporations/' + scoutinginc,
-  { proxy: false,
-  httpsAgent: https.Agent({
-      rejectUnauthorized: false // Allows the use of self-signed certificates (not recommended)
-})} )
-    .then(async function(corp) {
-      // console.log(corp.data)
-      var ceo_id = corp.data.ceo_id
+  await got.get('http://localhost:' + PORT + '/public/corporations/' + scoutinginc, {
+      responseType: 'json',
+      https: {
+        rejectUnauthorized: false
+      } 
+  })
+    .then(async function(esi_response) {
+      var corp = esi_response.body
+      // console.log(corp)
+      var ceo_id = corp.ceo_id
       // console.log(ceo_id)
-      var corp_data = corp.data
-      await axios.get('http://localhost:' + PORT + '/public/character/' + ceo_id,
-      { proxy: false,
-        httpsAgent: https.Agent({
-            rejectUnauthorized: false // Allows the use of self-signed certificates (not recommended)
-      })}  )
-        .then(function(ceo) {
-          // console.log(ceo.data)
+      var corp_data = corp
+      await got.get('http://localhost:' + PORT + '/public/characters/' + ceo_id, {
+        responseType: 'json',
+        https: {
+          rejectUnauthorized: false
+        } 
+      })
+        .then(function(esi_response2) {
+          var ceo = esi_response2.body
+          // console.log(ceo)
           var response = corp_data;
-          response.ceo = ceo.data;
+          response.ceo = ceo;
           // console.log(response)
           res.json(response);
         })
@@ -137,9 +139,8 @@ router.get('/', async function (req, res) {
         console.error(error)
         res.sendStatus(500).end();
       })
-        .finally(function() {
-          console.log('at the court');
-        })
+  
+  
 })
 
 module.exports = router

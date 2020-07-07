@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "NODE_ENV=test mocha -R min --timeout 5000",
+    "test": "NODE_ENV=test mocha -R min --timeout 7000",
     "build": "cd ./scoutinginc && npm install && npm run build"
   },
   "repository": {
@@ -30,6 +30,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "express-sslify": "^1.2.0",
+    "got": "^11.4.0",
     "mongoose": "^5.9.21",
     "morgan": "^1.10.0",
     "request": "^2.88.2"

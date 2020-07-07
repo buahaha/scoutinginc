@@ -70,7 +70,7 @@ describe('Public', function() {
 
     it('should send 404 when character not found', function(done) {
       request(app)
-        .get('/public/character/21138')
+        .get('/public/characters/21138')
           .expect(404)
             .end(function(err, res){
               if (err) throw err;
@@ -80,7 +80,7 @@ describe('Public', function() {
 
     it('should return OK', function(done) {
       request(app)
-        .get('/public/character/2113883361')
+        .get('/public/characters/2113883361')
           .expect(200)
             .end(function(err, res){
               if (err) throw err;
@@ -90,7 +90,7 @@ describe('Public', function() {
 
     it('should return json', function(done) {
       request(app)
-        .get('/public/character/2113883361')
+        .get('/public/characters/2113883361')
           .expect('Content-Type', /json/)
             .end(function(err, res){
               if (err) throw err;
