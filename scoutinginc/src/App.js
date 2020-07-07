@@ -43,6 +43,7 @@ class App extends React.Component {
   render() {
     const temperature = this.state.callSign;
     const ceo = this.state.ceo;
+    const date_founded = new Date(temperature.date_founded).toLocaleString();
     return (
       <div className="App">
         <header className="App-header">
@@ -58,7 +59,7 @@ class App extends React.Component {
           <TweetEmbed id="1279402833310175232" />
           <p>
             { temperature.member_count} players under the rule of { ceo.name } commonly 
-            pronounced as the CEO, since { Date(temperature.date_founded) } flying under 
+            pronounced as the CEO, since { date_founded } flying under 
             ticker [{ temperature.ticker }] and sharing { temperature.tax_rate * 100 }% tax.
           </p>
 
