@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  background-color: black;
+  color: darkkhaki;
 }
 
 .App-logo {
@@ -14,7 +16,9 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  /* background-color: #282c34; */
+  background-color: rgb(2,0,36);
+  background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,0,0,1) 100%);;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -35,4 +39,14 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+#tweet {
+  display: inline-block;
+}
+
+.inGameDescription {
+  display: flex;
+  font-size: medium;
+  background-color: ;
 }
