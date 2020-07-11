@@ -1,8 +1,8 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-var axios = require('axios');
-var enforce = require('express-sslify');
+// var axios = require('axios');
+// var enforce = require('express-sslify');
 var cors = require("cors");
 const morgan = require('morgan')
 
@@ -171,3 +171,4 @@ app.use('/public', publicRoutes);
 var scoutinginc = app.listen(PORT);
 
 exports.scoutinginc = scoutinginc;
+

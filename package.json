@@ -24,18 +24,15 @@
   },
   "homepage": "https://github.com/buahaha/scoutinginc#readme",
   "dependencies": {
-    "axios": "^0.19.2",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
-    "express-sslify": "^1.2.0",
     "got": "^11.4.0",
     "mongoose": "^5.9.21",
     "morgan": "^1.10.0",
     "passport": "^0.4.1",
-    "passport-eveonline-v2": "^1.0.0",
-    "request": "^2.88.2"
+    "passport-eveonline-v2": "^1.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.4",
