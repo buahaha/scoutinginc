@@ -42,11 +42,14 @@
 }
 
 #tweet {
-  display: inline-block;
+  /* display: inline-block; */
+  margin: auto;
 }
 
-.inGameDescription {
-  display: flex;
-  font-size: medium;
-  background-color: ;
+.inGameDescription font[size]  {
+    font-size: medium !important;
+}
+
+.corpDescription font[size]  {
+  font-size: 48px !important;
 }
