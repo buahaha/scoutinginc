@@ -57,3 +57,7 @@ html body {
 .corpDescription font[size]  {
   font-size: 48px !important;
 }
+
+.intelligence {
+  text-align: left;
+}

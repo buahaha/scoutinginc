@@ -11,6 +11,12 @@ var assert = require('assert');
 var request = require('supertest');
 const { Corporation } = require('../models/Corporation');
 const { Character } = require('../models/Character');
+const { Station } = require('../models/Station');
+const { Ancestry } = require('../models/Ancestry');
+const { Bloodline } = require('../models/Bloodline');
+const { Race } = require('../models/Race');
+const { Faction } = require('../models/Faction');
+const { System } = require('../models/System');
 
 var app = require('./../index').scoutinginc;
 
@@ -109,6 +115,275 @@ describe('Public', function() {
 
   })
 
+  describe('Ancestry', function(done) {
+
+    it('should send 404 when ancestry not found', function(done) {
+      request(app)
+        .get('/public/ancestries/5000')
+          .expect(404)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return OK', function(done) {
+      request(app)
+        .get('/public/ancestries/1')
+          .expect(200)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return json', function(done) {
+      request(app)
+        .get('/public/ancestries/1')
+          .expect('Content-Type', /json/)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should save to db', function(done) {
+      Ancestry.findOne({ancestry_id: 1})
+        .then(function(corp, error) {
+          if (error) done(error);
+          else if (corp.ancestry_id == 1) done()
+          else throw "ancestry not found"
+        })
+    })
+
+  })
+
+  describe('Bloodline', function(done) {
+
+    it('should send 404 when bloodline not found', function(done) {
+      request(app)
+        .get('/public/bloodlines/5000')
+          .expect(404)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return OK', function(done) {
+      request(app)
+        .get('/public/bloodlines/1')
+          .expect(200)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return json', function(done) {
+      request(app)
+        .get('/public/bloodlines/1')
+          .expect('Content-Type', /json/)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should save to db', function(done) {
+      Bloodline.findOne({bloodline_id: 1})
+        .then(function(corp, error) {
+          if (error) done(error);
+          else if (corp.bloodline_id == 1) done()
+          else throw "bloodline not found"
+        })
+    })
+
+  })
+
+  describe('Race', function(done) {
+
+    it('should send 404 when race not found', function(done) {
+      request(app)
+        .get('/public/races/5000')
+          .expect(404)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return OK', function(done) {
+      request(app)
+        .get('/public/races/1')
+          .expect(200)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return json', function(done) {
+      request(app)
+        .get('/public/races/1')
+          .expect('Content-Type', /json/)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should save to db', function(done) {
+      Race.findOne({race_id: 1})
+        .then(function(corp, error) {
+          if (error) done(error);
+          else if (corp.race_id == 1) done()
+          else throw "race not found"
+        })
+    })
+
+  })
+
+  describe('Faction', function(done) {
+
+    it('should send 404 when faction not found', function(done) {
+      request(app)
+        .get('/public/factions/1')
+          .expect(404)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return OK', function(done) {
+      request(app)
+        .get('/public/factions/500003')
+          .expect(200)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return json', function(done) {
+      request(app)
+        .get('/public/factions/500003')
+          .expect('Content-Type', /json/)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should save to db', function(done) {
+      Faction.findOne({faction_id: 500003})
+        .then(function(corp, error) {
+          if (error) done(error);
+          else if (corp.faction_id == 500003) done()
+          else throw "faction not found"
+        })
+    })
+
+  })
+
+  describe('Station', function(done) {
+
+    it('should send 404 when station not found', function(done) {
+      request(app)
+        .get('/public/stations/21138')
+          .expect(404)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return OK', function(done) {
+      request(app)
+        .get('/public/stations/60005722')
+          .expect(200)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return json', function(done) {
+      request(app)
+        .get('/public/stations/60005722')
+          .expect('Content-Type', /json/)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should save to db', function(done) {
+      Station.findOne({station_id: 60005722})
+        .then(function(corp, error) {
+          if (error) done(error);
+          else if (corp.station_id == 60005722) done()
+          else throw "station not found"
+        })
+    })
+
+  })
+
+  describe('System', function(done) {
+
+    it('should send 404 when system not found', function(done) {
+      request(app)
+        .get('/public/systems/21138')
+          .expect(404)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return OK', function(done) {
+      request(app)
+        .get('/public/systems/30002187')
+          .expect(200)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return json', function(done) {
+      request(app)
+        .get('/public/systems/30002187')
+          .expect('Content-Type', /json/)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should save to db', function(done) {
+      System.findOne({system_id: 30002187})
+        .then(function(corp, error) {
+          if (error) done(error);
+          else if (corp.system_id == 30002187) done()
+          else throw "system not found"
+        })
+    })
+
+  })
+
+
+
+
+
+
+
+
+
+
+
+  // WRONG WAY! App.js
   describe('home', function(done) {
 
     it('should return OK', function(done) {

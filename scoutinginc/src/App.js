@@ -2,7 +2,7 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 // var HtmlToReactParser = require('html-to-react').Parser;
 import {Parser} from 'html-to-react';
@@ -58,6 +58,7 @@ class App extends React.Component {
    
   render() {
     const temperature = this.state.callSign;
+    // console.log(temperature)
     const corp_desc = this.state.corp_description;
     const ceo_desc = this.state.ceo_description;
     // const ceo_desc = 
@@ -83,27 +84,54 @@ class App extends React.Component {
           <article>
             <Container fluid>
               <Row>
-                <Row>
-                  <Col>
-                  
-                    <Container id="tweet">
-                      <TweetEmbed id="1279402833310175232" />
-                    </Container>
-                  </Col>
-                  <Col>
-                    <p >
-                      { temperature.member_count} players under the rule of { ceo.name } commonly 
-                      pronounced as the CEO, since { date_founded } flying under 
-                      ticker [{ temperature.ticker }] and sharing { temperature.tax_rate * 100 }% tax.
-                    </p>
-                    <p className='inGameDescription'>
-                      { ceo_desc }
-                    </p>
-                  </Col>
-                </Row>
-                <Row>
+                <Col>
                 
-                </Row>
+                  <Container id="tweet">
+                    <TweetEmbed id="1279402833310175232" />
+                  </Container>
+                </Col>
+                <Col>
+                  <Form>
+                    <Form.Group controlId="formBasicText">
+                      <Form.Label>Search</Form.Label>
+                      <Form.Control type="text" placeholder="Enter string" />
+                      <Form.Text className="text-muted">
+                        Search for entiety in New Eden
+                      </Form.Text>
+                    </Form.Group>
+
+                    <Form.Group controlId="formCategory">
+                      <Form.Control size="sm" as="select">
+                        <option>corporation</option>
+                      </Form.Control>
+                      <Form.Text className="text-muted">
+                        Choose category
+                      </Form.Text>
+                    </Form.Group>
+                    <Button variant="primary" type="submit">
+                      Sucouting (test, please ignore)
+                    </Button>
+                  </Form>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <h2>{ temperature.name }</h2>
+                  <p className='intelligence'>
+                    { temperature.member_count} capsuleers under the CEO { ceo.name } founded by { temperature.creator_id }, since { date_founded } flying under 
+                    ticker <code>[{ temperature.ticker }]</code> and sharing { temperature.tax_rate * 100 }% tax 
+                    with home station at {temperature.home_station_id}, {temperature.shares} shares
+                    and available on the internet under the link <a href={temperature.url} target="corpration">here</a>.
+                  </p>
+                  <p className='inGameDescription'>
+                    In-game description: <br />
+                    { corp_desc }
+                  </p>
+                  <p className='inGameDescription'>
+                    CEO's in-game description: <br />
+                    { ceo_desc }
+                  </p>
+                </Col>
               </Row>
             </Container>
           </article>
