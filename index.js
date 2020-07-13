@@ -174,7 +174,7 @@ app.use('/public', publicRoutes);
 //   } else {
 //       res.redirect('/login');
 //   }
-}
+// }
 
 
 
