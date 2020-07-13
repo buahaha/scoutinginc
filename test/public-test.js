@@ -17,6 +17,12 @@ const { Bloodline } = require('../models/Bloodline');
 const { Race } = require('../models/Race');
 const { Faction } = require('../models/Faction');
 const { System } = require('../models/System');
+const { Alliance } = require('../models/Alliance');
+const { CorporationIcons } = require('../models/CorporationIcons');
+const { AllianceIcons } = require('../models/AllianceIcons');
+const { CharacterCorporationHistory } = require('../models/CharacterCorporationHistory');
+const { AllianceCorporations } = require('../models/AllianceCorporations');
+const { CharacterPortrait } = require('../models/CharacterPortrait');
 
 var app = require('./../index').scoutinginc;
 
@@ -72,6 +78,96 @@ describe('Public', function() {
     })
   })
 
+  describe('CorporationIcons', function(done) {
+
+    it('should send 404 when corporation icons not found', function(done) {
+      request(app)
+        .get('/public/corporations/98648/icons')
+          .expect(404)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return OK', function(done) {
+      request(app)
+        .get('/public/corporations/98648528/icons')
+          .expect(200)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return json', function(done) {
+      request(app)
+        .get('/public/corporations/98648528/icons')
+          .expect('Content-Type', /json/)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should save to db', function(done) {
+      CorporationIcons.findOne({corporation_id: 98648528})
+        .then(function(corp, error) {
+          if (error) {
+            done(error);
+          } else if (corp.corporation_id == 98648528) {
+            done()
+          }
+          else throw "corporation icons not found"
+        })
+    })
+  })
+
+  describe('CorporationAllianceHistory', function(done) {
+
+    it('should send 404 when corporation alliance history not found', function(done) {
+      request(app)
+        .get('/public/corporations/98648/alliancehistory')
+          .expect(404)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return OK', function(done) {
+      request(app)
+        .get('/public/corporations/98648528/alliancehistory')
+          .expect(200)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return json', function(done) {
+      request(app)
+        .get('/public/corporations/98648528/alliancehistory')
+          .expect('Content-Type', /json/)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should save to db', function(done) {
+      Corporation.findOne({corporation_id: 98648528})
+        .then(function(corp, error) {
+          if (error) {
+            done(error);
+          } else if (corp.corporation_id == 98648528) {
+            done()
+          }
+          else throw "corporation alliance history not found"
+        })
+    })
+  })
+
   describe('Character', function(done) {
 
     it('should send 404 when character not found', function(done) {
@@ -113,6 +209,94 @@ describe('Public', function() {
         })
     })
 
+  })
+
+  describe('CharacterCorporationHistory', function(done) {
+
+    it('should send 404 when character corporation history not found', function(done) {
+      request(app)
+        .get('/public/characters/21138/corporationhistory')
+          .expect(404)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return OK', function(done) {
+      request(app)
+        .get('/public/characters/2113883361/corporationhistory')
+          .expect(200)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return json', function(done) {
+      request(app)
+        .get('/public/characters/2113883361/corporationhistory')
+          .expect('Content-Type', /json/)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should save to db', function(done) {
+      CharacterCorporationHistory.findOne({character_id: 2113883361})
+        .then(function(corp, error) {
+          if (error) done(error);
+          else if (corp.character_id == 2113883361) done()
+          else throw "character not found"
+        })
+    })
+
+  })
+
+  describe('CorporationIcons', function(done) {
+
+    it('should send 404 when character portrait not found', function(done) {
+      request(app)
+        .get('/public/characters/98648/portrait')
+          .expect(404)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return OK', function(done) {
+      request(app)
+        .get('/public/characters/2113883361/portrait')
+          .expect(200)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return json', function(done) {
+      request(app)
+        .get('/public/characters/2113883361/portrait')
+          .expect('Content-Type', /json/)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should save to db', function(done) {
+      CharacterPortrait.findOne({character_id: 2113883361})
+        .then(function(corp, error) {
+          if (error) {
+            done(error);
+          } else if (corp.character_id == 2113883361) {
+            done()
+          }
+          else throw "character portrait not found"
+        })
+    })
   })
 
   describe('Ancestry', function(done) {
@@ -373,9 +557,185 @@ describe('Public', function() {
 
   })
 
+  describe('Alliance', function(done) {
 
+    it('should send 404 when alliance not found', function(done) {
+      request(app)
+        .get('/public/alliances/9848')
+          .expect(404)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
 
+    it('should return OK', function(done) {
+      request(app)
+        .get('/public/alliances/498125261')
+          .expect(200)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
 
+    it('should return json', function(done) {
+      request(app)
+        .get('/public/alliances/498125261')
+          .expect('Content-Type', /json/)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should save to db', function(done) {
+      Alliance.findOne({alliance_id: 498125261})
+        .then(function(corp, error) {
+          if (error) {
+            done(error);
+          } else if (corp.alliance_id == 498125261) {
+            done()
+          }
+          else throw "alliance not found"
+        })
+    })
+  })
+
+  describe('AllianceIcons', function(done) {
+
+    it('should send 404 when alliance icons not found', function(done) {
+      request(app)
+        .get('/public/alliances/98648/icons')
+          .expect(404)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return OK', function(done) {
+      request(app)
+        .get('/public/alliances/498125261/icons')
+          .expect(200)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return json', function(done) {
+      request(app)
+        .get('/public/alliances/498125261/icons')
+          .expect('Content-Type', /json/)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should save to db', function(done) {
+      AllianceIcons.findOne({alliance_id: 498125261})
+        .then(function(corp, error) {
+          if (error) {
+            done(error);
+          } else if (corp.alliance_id == 498125261) {
+            done()
+          }
+          else throw "alliance icons not found"
+        })
+    })
+  })
+
+  describe('AllianceCorporations', function(done) {
+
+    it('should send 404 when alliance corporations not found', function(done) {
+      request(app)
+        .get('/public/alliances/98648/corporations')
+          .expect(404)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return OK', function(done) {
+      request(app)
+        .get('/public/alliances/498125261/corporations')
+          .expect(200)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return json', function(done) {
+      request(app)
+        .get('/public/alliances/498125261/corporations')
+          .expect('Content-Type', /json/)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should save to db', function(done) {
+      AllianceCorporations.findOne({alliance_id: 498125261})
+        .then(function(corp, error) {
+          if (error) {
+            done(error);
+          } else if (corp.alliance_id == 498125261) {
+            done()
+          }
+          else throw "alliance icons not found"
+        })
+    })
+  })
+
+  describe('AllianceCorporations', function(done) {
+
+    // it('should send 404 when alliance corporations not found', function(done) {
+    //   request(app)
+    //     .get('/public/status')
+    //       .expect(404)
+    //         .end(function(err, res){
+    //           if (err) throw err;
+    //           else done()
+    //         });
+    // })
+
+    it('should return OK', function(done) {
+      request(app)
+        .get('/public/status')
+          .expect(200)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    it('should return json', function(done) {
+      request(app)
+        .get('/public/status')
+          .expect('Content-Type', /json/)
+            .end(function(err, res){
+              if (err) throw err;
+              else done()
+            });
+    })
+
+    // it('should save to db', function(done) {
+    //   AllianceCorporations.findOne({alliance_id: 498125261})
+    //     .then(function(corp, error) {
+    //       if (error) {
+    //         done(error);
+    //       } else if (corp.alliance_id == 498125261) {
+    //         done()
+    //       }
+    //       else throw "alliance icons not found"
+    //     })
+    // })
+  })
 
 
 

@@ -11,8 +11,24 @@ const { Bloodline } = require('../models/Bloodline');
 const { Race } = require('../models/Race');
 const { Faction } = require('../models/Faction');
 const { System } = require('../models/System');
+const { Alliance } = require('../models/Alliance');
+const { CorporationIcons } = require('../models/CorporationIcons');
+const { AllianceIcons } = require('../models/AllianceIcons');
+const { CharacterCorporationHistory } = require('../models/CharacterCorporationHistory');
+const { CorporationAllianceHistory } = require('../models/CorporationAllianceHistory');
+const { AllianceCorporations } = require('../models/AllianceCorporations');
+const { CharacterPortrait } = require('../models/CharacterPortrait');
+const { Status } = require('../models/Status');
 
 const PORT = process.env.PORT || 9000;
+
+router.use((req, res, next) => {
+  console.log(req.hostname);
+  if (req.hostname != 'localhost' || req.hostname != 'scoutinginc.herokuapp.com') {
+    res.sendStatus(403);
+  }
+  next()
+})
 
 // corporation Scouting Inc id -> 98648528
 const scoutinginc = 98648528;
@@ -68,6 +84,106 @@ router.get('/corporations/:corporationID', async function(req, res) {
       })
 })
 
+router.get('/corporations/:corporationID/icons', async (req, res) => {
+  var corporationID = req.params.corporationID;
+  await Corporation.findOne({corporation_id: corporationID})
+    .then(async (corp, error) => {
+      if (error) {
+        console.log(error)
+        res.sendStatus(500).end()
+      } else if (corp == null) {
+        throw 'corporation not found';
+      }
+      var imageOfCorp = corp.corporation_id;
+      await got.get('https://esi.evetech.net/latest/corporations/' + imageOfCorp + '/icons/?datasource=tranquility', {
+          responseType: 'json'
+      })
+        .then(async function(esi_response) {
+          var body = esi_response.body;
+          await CorporationIcons.updateOne({
+            corporation_id: corporationID
+          }, {
+            px128x128: body.px128x128,
+            px256x256: body.px256x256,
+            px64x64: body.px64x64,
+            corporation_id: corporationID
+          }, {
+            upsert: true
+          })
+            .then(async function(corp) {
+              await CorporationIcons.findOne({corporation_id: corporationID}).then(function(icons, error) {
+                if (error) {
+                  res.send(500)
+                } else {
+                  res.json(icons)
+                }
+              })
+            })
+              .catch(function(error) {
+                console.error(error)
+                res.sendStatus(500).end();
+              })
+        })
+          .catch(function(error) {
+            console.error(error)
+            res.sendStatus(404).end();
+          })
+    })
+      .catch(err => {
+        console.log(err);
+        res.sendStatus(404);
+      })
+})
+
+router.get('/corporations/:corporationID/alliancehistory', async (req, res) => {
+  var corporationID = req.params.corporationID;
+  await Corporation.findOne({corporation_id: corporationID})
+    .then(async (corporation, error) => {
+      if (error) {
+        console.log(error)
+        res.sendStatus(500).end()
+      } else if (corporation == null) {
+        throw 'corporation not found'
+      }
+      var corporationHistoryOf = corporation.corporation_id;
+      await got.get('https://esi.evetech.net/latest/corporations/' + corporationHistoryOf + '/alliancehistory/?datasource=tranquility', {
+          responseType: 'json'
+      })
+        .then(async function(esi_response) {
+          var body = esi_response.body;
+          await CorporationAllianceHistory.updateOne({
+            corporation_id: corporationID
+          }, {
+            history: body,
+            corporation_id: corporationHistoryOf
+          }, {
+            upsert: true
+          })
+            .then(async function(corp) {
+              await CorporationAllianceHistory.findOne({corporation_id: corporationID}).then(function(history, error) {
+                if (error) {
+                  res.send(500)
+                } else {
+                  res.json(history)
+                }
+              })
+            })
+              .catch(function(error) {
+                console.error(error)
+                res.sendStatus(500).end();
+              })
+        })
+          .catch(function(error) {
+            console.error(error)
+            res.sendStatus(404).end();
+          })
+    })
+      .catch(err => {
+        console.log(err);
+        res.sendStatus(404);
+      })
+})
+
 // character Volatile Mind id - 2113883361
 router.get('/characters/:characterID', async function (req, res) {
   var characterID = req.params.characterID;
@@ -109,6 +225,107 @@ router.get('/characters/:characterID', async function (req, res) {
         res.sendStatus(404).end();
       })
   
+})
+
+router.get('/characters/:characterID/corporationhistory', async (req, res) => {
+  var characterID = req.params.characterID;
+  await Character.findOne({character_id: characterID})
+    .then(async (char, error) => {
+      if (error) {
+        console.log(error)
+        res.sendStatus(500).end()
+      } else if (char == null) {
+        throw 'character not found'
+      }
+      var characterHistoryOf = char.character_id;
+      await got.get('https://esi.evetech.net/latest/characters/' + characterHistoryOf + '/corporationhistory/?datasource=tranquility', {
+          responseType: 'json'
+      })
+        .then(async function(esi_response) {
+          var body = esi_response.body;
+          await CharacterCorporationHistory.updateOne({
+            character_id: characterID
+          }, {
+            history: body,
+            character_id: characterHistoryOf
+          }, {
+            upsert: true
+          })
+            .then(async function(corp) {
+              await CharacterCorporationHistory.findOne({character_id: characterID}).then(function(history, error) {
+                if (error) {
+                  res.send(500)
+                } else {
+                  res.json(history)
+                }
+              })
+            })
+              .catch(function(error) {
+                console.error(error)
+                res.sendStatus(500).end();
+              })
+        })
+          .catch(function(error) {
+            console.error(error)
+            res.sendStatus(404).end();
+          })
+    })
+      .catch(err => {
+        console.log(err);
+        res.sendStatus(404);
+      })
+})
+
+router.get('/characters/:characterID/portrait', async (req, res) => {
+  var characterID = req.params.characterID;
+  await Character.findOne({character_id: characterID})
+    .then(async (character, error) => {
+      if (error) {
+        console.log(error)
+        res.sendStatus(500).end()
+      } else if (character == null) {
+        throw 'no character found';
+      }
+      var imageOfCharacter = character.character_id;
+      await got.get('https://esi.evetech.net/latest/characters/' + imageOfCharacter + '/portrait/?datasource=tranquility', {
+          responseType: 'json'
+      })
+        .then(async function(esi_response) {
+          var body = esi_response.body;
+          await CharacterPortrait.updateOne({
+            character_id: characterID
+          }, {
+            px128x128: body.px128x128,
+            px256x256: body.px256x256,
+            px512x512: body.px512x512,
+            px64x64: body.px64x64,
+            character_id: characterID
+          }, {
+            upsert: true
+          })
+            .then(async function(corp) {
+              await CharacterPortrait.findOne({character_id: characterID}).then(function(icons, error) {
+                if (error) {
+                  res.send(500)
+                } else {
+                  res.json(icons)
+                }
+              })
+            })
+              .catch(function(error) {
+                console.error(error)
+                res.sendStatus(500).end();
+              })
+        })
+          .catch(function(error) {
+            console.error(error)
+            res.sendStatus(404).end();
+          })
+    })
+      .catch(err => {
+        console.log(err);
+        res.sendStatus(404);
+      })
 })
 
 router.get('/ancestries/:ancestryID', async (req, res) => {
@@ -293,6 +510,8 @@ router.get('/stations/:stationID', async (req, res) => {
           await Station.findOne({station_id: stationID}).then(function(station, error) {
             if (error) {
               res.send(500)
+            } else if (station == null) {
+              res.sendStatus(404).end()
             } else {
               res.json(station)
             }
@@ -338,6 +557,8 @@ router.get('/systems/:systemID', async (req, res) => {
           await System.findOne({system_id: systemID}).then(function(system, error) {
             if (error) {
               res.send(500)
+            } else if (system == null) {
+              res.sendStatus(404).end()
             } else {
               res.json(system)
             }
@@ -362,11 +583,167 @@ router.get('/alliances/:allianceID', async (req, res) => {
     .then(async (esi_response) => {
       var body = esi_response.body;
       await Alliance.updateOne({ alliance_id: allianceID}, {
+        creator_corporation_id: body.creator_corporation_id,
+        creator_id: body.creator_id,
+        date_founded: body.date_founded,
+        executor_corporation_id: body.executor_corporation_id,
+        name: body.name,
+        ticker: body.ticker,
+        alliance_id: allianceID
+      }, {
+        upsert: true
+      }).then(async function(corp) {
+        await Alliance.findOne({alliance_id: allianceID}).then(function(alliance, error) {
+          if (error) {
+            res.send(500)
+          } else {
+            res.json(alliance)
+          }
+        })
+      })
+        .catch(function(err) {
+          console.error(err)
+          res.sendStatus(500).json(err)
+      })
+    })
+      .catch(function(error) {
+        console.error(error)
+        res.sendStatus(404).end();
+      })
+})
 
+router.get('/alliances/:allianceID/icons', async (req, res) => {
+  var allianceID = req.params.allianceID;
+  await Alliance.findOne({alliance_id: allianceID})
+    .then(async (alliance, error) => {
+      if (error) {
+        console.log(error)
+        res.sendStatus(500).end()
+      } else if (alliance == null) {
+        throw 'no alliance found';
+      }
+      var imageOfAlliance = alliance.alliance_id;
+      await got.get('https://esi.evetech.net/latest/alliances/' + imageOfAlliance + '/icons/?datasource=tranquility', {
+          responseType: 'json'
+      })
+        .then(async function(esi_response) {
+          var body = esi_response.body;
+          await AllianceIcons.updateOne({
+            alliance_id: allianceID
+          }, {
+            px128x128: body.px128x128,
+            px256x256: body.px256x256,
+            px64x64: body.px64x64,
+            alliance_id: allianceID
+          }, {
+            upsert: true
+          })
+            .then(async function(corp) {
+              await AllianceIcons.findOne({alliance_id: allianceID}).then(function(icons, error) {
+                if (error) {
+                  res.send(500)
+                } else {
+                  res.json(icons)
+                }
+              })
+            })
+              .catch(function(error) {
+                console.error(error)
+                res.sendStatus(500).end();
+              })
+        })
+          .catch(function(error) {
+            console.error(error)
+            res.sendStatus(404).end();
+          })
+    })
+      .catch(err => {
+        console.log(err);
+        res.sendStatus(404);
+      })
+})
+
+router.get('/alliances/:allianceID/corporations', async (req, res) => {
+  var allianceID = req.params.allianceID;
+  await Alliance.findOne({alliance_id: allianceID})
+    .then(async (alliance, error) => {
+      if (error) {
+        console.log(error)
+        res.sendStatus(500).end()
+      } else if (alliance == null) {
+        throw 'no alliance found';
+      }
+      var corporationsOfAlliance = alliance.alliance_id;
+      await got.get('https://esi.evetech.net/latest/alliances/' + corporationsOfAlliance + '/corporations/?datasource=tranquility', {
+          responseType: 'json'
+      })
+        .then(async function(esi_response) {
+          var body = esi_response.body;
+          await AllianceCorporations.updateOne({
+            alliance_id: allianceID
+          }, {
+            corporation_ids: body,
+            alliance_id: allianceID
+          }, {
+            upsert: true
+          })
+            .then(async function(corp) {
+              await AllianceCorporations.findOne({alliance_id: allianceID}).then(function(corporations, error) {
+                if (error) {
+                  res.send(500)
+                } else {
+                  res.json(corporations)
+                }
+              })
+            })
+              .catch(function(error) {
+                console.error(error)
+                res.sendStatus(500).end();
+              })
+        })
+          .catch(function(error) {
+            console.error(error)
+            res.sendStatus(404).end();
+          })
+    })
+      .catch(err => {
+        console.log(err);
+        res.sendStatus(404);
+      })
+})
+
+router.get('/status', async (req, res) => {
+  await got.get('https://esi.evetech.net/latest/status/?datasource=tranquility', {
+    responseType: 'json'
+  })
+    .then(async function(esi_response) {
+      var body = esi_response.body;
+      await Status.updateOne({}, {
+        players: body.players,
+        server_version: body.server_version,
+        start_time: body.start_time,
+        vip: body.vip
       }, {
         upsert: true
       })
+        .then(async function(corp) {
+          await Status.findOne({}).then(function(status, error) {
+            if (error) {
+              res.send(500)
+            } else {
+              res.json(status)
+            }
+          })
+        })
+          .catch(function(error) {
+            console.error(error)
+            res.sendStatus(500).end();
+          })
     })
+      .catch(function(error) {
+        console.error(error)
+        res.sendStatus(404).end();
+      })
 })
 
 router.get('/search/:category/:strict/:string', async function(req, res) {

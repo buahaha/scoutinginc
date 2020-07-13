@@ -45,6 +45,14 @@ html body {
   }
 }
 
+.headerWhite {
+  color: white;
+}
+
+.headerRed {
+  color: red;
+}
+
 #tweet {
   /* display: inline-block; */
   margin: auto;
