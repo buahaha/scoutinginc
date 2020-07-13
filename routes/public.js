@@ -2,7 +2,6 @@ var express = require('express')
 var router = express.Router()
 
 const got = require('got');
-// const { Alliance } = require('../models/Alliance');
 const { Corporation } = require('../models/Corporation');
 const { Character } = require('../models/Character');
 const { Station } = require('../models/Station');
@@ -24,9 +23,9 @@ const PORT = process.env.PORT || 9000;
 
 router.use((req, res, next) => {
   console.log(req.hostname);
-  if (req.hostname != 'localhost' || req.hostname != 'scoutinginc.herokuapp.com') {
-    res.sendStatus(403);
-  }
+  // if (req.hostname != 'localhost' || req.hostname != 'scoutinginc.herokuapp.com') {
+  //   res.sendStatus(403);
+  // }
   next()
 })
 
