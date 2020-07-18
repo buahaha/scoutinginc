@@ -156,7 +156,7 @@ class Corporation extends React.Component {
         if (historyItem.alliance_name) {
           return <li key={historyItem.record_id.toString()}>Mamber of {historyItem.alliance_name} since {historyItem.start_date}.</li>
         } else {
-          return <li key={historyItem.record_id.toString()}>Seeks to join any of Tha Cartel since {historyItem.start_date}.</li>
+          return <li key={historyItem.record_id.toString()}>Seeks to join any of The Cartels since {historyItem.start_date}.</li>
         }
       });
     }
